@@ -1,0 +1,18 @@
+# Python cache and compiled files
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Virtual environments
+.venv/
+venv/
+
+# Runtime artifacts
+internship_bot/generated_resumes/
+internship_bot/output/
+internship_bot/config/profile.runtime.yaml
+internship_bot/config/sources.runtime.yaml
+
+# Local secrets or alt configs
+*.env
+*.local.yaml

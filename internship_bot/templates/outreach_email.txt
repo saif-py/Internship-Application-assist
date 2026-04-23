@@ -1,0 +1,18 @@
+Hi {hiring_contact_name},
+
+I hope you are doing well. I am {candidate_name} ({candidate_headline}) and I just applied for the {role} internship role at {company}.
+
+Apply link: {apply_url}
+
+Why I am a fit:
+- {summary_line}
+- Skills I can contribute immediately: {emphasis_line}
+- I have a role-specific resume prepared for this opening: {resume_path}
+
+If helpful, I would value a short conversation and can share relevant project examples in detail.
+
+Best regards,
+{candidate_name}
+{candidate_email}
+{candidate_phone}
+LinkedIn: {candidate_linkedin}

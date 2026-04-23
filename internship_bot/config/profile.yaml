@@ -1,0 +1,123 @@
+candidate:
+  full_name: "Your Name"
+  email: "you@example.com"
+  phone: "+91-XXXXXXXXXX"
+  linkedin: "https://www.linkedin.com/in/your-profile"
+  portfolio: "https://your-portfolio-or-github-url"
+  current_location: "India"
+  graduation: "May 2027"
+  work_authorization: "Authorized to work in India"
+  willing_to_relocate: "Yes"
+  headline: "Business and product-oriented student with analytics and AI project exposure"
+  resume_path: "internship_bot/config/starter_resume.md"
+
+targets:
+  require_internship_keyword: true
+  min_fit_score: 55
+  internship_keywords:
+    - intern
+    - internship
+    - summer intern
+    - summer analyst
+    - apprentice
+    - co-op
+  role_keywords:
+    - product
+    - product manager
+    - strategy
+    - operations
+    - business analyst
+    - program
+    - growth
+    - ai
+    - analytics
+  ai_keywords:
+    - ai
+    - genai
+    - llm
+    - machine learning
+    - artificial intelligence
+    - automation
+    - data
+  excluded_keywords:
+    - software engineer
+    - backend engineer
+    - frontend engineer
+    - site reliability
+    - devops
+  preferred_locations:
+    - remote
+    - bengaluru
+    - bangalore
+    - gurugram
+    - hyderabad
+    - mumbai
+    - pune
+  company_priority:
+    - Google
+    - Microsoft
+    - Amazon
+    - OpenAI
+    - Adobe
+    - Uber
+    - Atlassian
+
+role_tracks:
+  product_management:
+    match_keywords:
+      - product
+      - roadmap
+      - user research
+      - experimentation
+      - stakeholder
+      - go-to-market
+    summary_template: "{candidate_name} is applying for {role} at {company} with strong product thinking, experimentation, and cross-functional execution experience."
+    emphasis_skills:
+      - product strategy
+      - customer research
+      - cross-functional execution
+      - experimentation
+      - SQL
+      - analytics
+
+  ai_business_ops:
+    match_keywords:
+      - ai
+      - machine learning
+      - llm
+      - automation
+      - strategy
+      - business operations
+    summary_template: "{candidate_name} is applying for {role} at {company} with AI-aware business problem solving, process design, and measurable execution focus."
+    emphasis_skills:
+      - AI workflow understanding
+      - problem structuring
+      - process optimization
+      - stakeholder communication
+      - analytics
+      - documentation
+
+  operations_analytics:
+    match_keywords:
+      - operations
+      - analyst
+      - data
+      - business intelligence
+      - reporting
+      - forecasting
+    summary_template: "{candidate_name} is applying for {role} at {company} with strong operations analytics, dashboarding, and KPI-driven decision support experience."
+    emphasis_skills:
+      - Excel
+      - SQL
+      - dashboarding
+      - process improvement
+      - KPI tracking
+      - business communication
+
+google:
+  spreadsheet_id: ""
+
+sheet_names:
+  listings: "internship_listings"
+  contacts: "hiring_contacts"
+  outreach: "outreach_drafts"

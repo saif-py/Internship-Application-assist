@@ -1,0 +1,24 @@
+# Add or remove ATS sources based on your target companies.
+# If any source fails (404, timeout, etc.), the bot skips it and continues.
+
+greenhouse:
+  - board_token: openai
+    company: OpenAI
+    domain: openai.com
+
+  - board_token: stripe
+    company: Stripe
+    domain: stripe.com
+
+  - board_token: notion
+    company: Notion
+    domain: notion.so
+
+lever:
+  - company_slug: scale-ai
+    company: Scale AI
+    domain: scale.com
+
+  - company_slug: canva
+    company: Canva
+    domain: canva.com

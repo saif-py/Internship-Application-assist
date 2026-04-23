@@ -1,0 +1,62 @@
+name: Internship Assistant Sync
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 */8 * * *"
+
+jobs:
+  run-internship-bot:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install -r internship_bot/requirements.txt
+
+      - name: Prepare runtime configs
+        shell: bash
+        run: |
+          cp internship_bot/config/profile.yaml internship_bot/config/profile.runtime.yaml
+          cp internship_bot/config/sources.yaml internship_bot/config/sources.runtime.yaml
+
+      - name: Override profile config from secret
+        if: ${{ secrets.CANDIDATE_PROFILE_YAML != '' }}
+        shell: bash
+        run: |
+          cat <<'EOF' > internship_bot/config/profile.runtime.yaml
+          ${{ secrets.CANDIDATE_PROFILE_YAML }}
+          EOF
+
+      - name: Override sources config from secret
+        if: ${{ secrets.JOB_SOURCES_YAML != '' }}
+        shell: bash
+        run: |
+          cat <<'EOF' > internship_bot/config/sources.runtime.yaml
+          ${{ secrets.JOB_SOURCES_YAML }}
+          EOF
+
+      - name: Run internship assistant
+        env:
+          GOOGLE_SPREADSHEET_ID: ${{ secrets.GOOGLE_SPREADSHEET_ID }}
+          GOOGLE_SHEETS_CREDENTIALS_JSON: ${{ secrets.GOOGLE_SHEETS_CREDENTIALS_JSON }}
+          HUNTER_API_KEY: ${{ secrets.HUNTER_API_KEY }}
+        run: |
+          python internship_bot/run.py \
+            --profile internship_bot/config/profile.runtime.yaml \
+            --sources internship_bot/config/sources.runtime.yaml \
+            --max-listings 150
+
+      - name: Upload tailored resume artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: tailored-resumes
+          path: internship_bot/generated_resumes/
+          if-no-files-found: ignore
