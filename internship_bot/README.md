@@ -30,15 +30,31 @@ This is designed for your workflow: you stay manually involved for application s
 4. Fill your details in `internship_bot/config/profile.yaml`.
 5. Add target companies in `internship_bot/config/sources.yaml`.
 
+## Sheets Sync Modes
+
+You can choose one of two ways to update Google Sheets:
+
+1. Service account mode (existing flow)
+2. Apps Script webhook mode (no service-account JSON)
+
+Webhook mode is recommended if you want to avoid handling Google service-account keys.
+Setup guide: `internship_bot/apps_script/README.md`
+
 ## GitHub Secrets
 
 Add these repository secrets:
 
+- `SHEETS_WEBHOOK_URL` (preferred mode)
+- `SHEETS_WEBHOOK_TOKEN` (preferred mode)
 - `GOOGLE_SPREADSHEET_ID`
 - `GOOGLE_SHEETS_CREDENTIALS_JSON`
 - `HUNTER_API_KEY` (optional for stronger contact discovery)
 - `CANDIDATE_PROFILE_YAML` (optional override for profile file)
 - `JOB_SOURCES_YAML` (optional override for sources file)
+
+Notes:
+- If `SHEETS_WEBHOOK_URL` is set, the bot uses webhook mode and ignores service-account secrets.
+- If webhook URL is not set, the bot falls back to service-account mode.
 
 ## Local Dry Run
 

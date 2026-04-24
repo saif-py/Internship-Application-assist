@@ -29,6 +29,9 @@ Then update:
 
 For cloud runs, add GitHub secrets documented in `internship_bot/README.md`.
 
+If you want to avoid Google service-account JSON keys, use Apps Script webhook mode:
+`internship_bot/apps_script/README.md`
+
 ## Push As New GitHub Repository
 
 ```bash

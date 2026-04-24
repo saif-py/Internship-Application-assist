@@ -7,5 +7,6 @@ __all__ = [
     "scoring",
     "contacts",
     "sheet_client",
+    "webhook_client",
     "resume_tailor",
 ]

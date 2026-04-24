@@ -28,23 +28,27 @@ jobs:
           cp internship_bot/config/sources.yaml internship_bot/config/sources.runtime.yaml
 
       - name: Override profile config from secret
-        if: ${{ secrets.CANDIDATE_PROFILE_YAML != '' }}
         shell: bash
+        env:
+          CANDIDATE_PROFILE_YAML: ${{ secrets.CANDIDATE_PROFILE_YAML }}
         run: |
-          cat <<'EOF' > internship_bot/config/profile.runtime.yaml
-          ${{ secrets.CANDIDATE_PROFILE_YAML }}
-          EOF
+          if [ -n "$CANDIDATE_PROFILE_YAML" ]; then
+            printf '%s\n' "$CANDIDATE_PROFILE_YAML" > internship_bot/config/profile.runtime.yaml
+          fi
 
       - name: Override sources config from secret
-        if: ${{ secrets.JOB_SOURCES_YAML != '' }}
         shell: bash
+        env:
+          JOB_SOURCES_YAML: ${{ secrets.JOB_SOURCES_YAML }}
         run: |
-          cat <<'EOF' > internship_bot/config/sources.runtime.yaml
-          ${{ secrets.JOB_SOURCES_YAML }}
-          EOF
+          if [ -n "$JOB_SOURCES_YAML" ]; then
+            printf '%s\n' "$JOB_SOURCES_YAML" > internship_bot/config/sources.runtime.yaml
+          fi
 
       - name: Run internship assistant
         env:
+          SHEETS_WEBHOOK_URL: ${{ secrets.SHEETS_WEBHOOK_URL }}
+          SHEETS_WEBHOOK_TOKEN: ${{ secrets.SHEETS_WEBHOOK_TOKEN }}
           GOOGLE_SPREADSHEET_ID: ${{ secrets.GOOGLE_SPREADSHEET_ID }}
           GOOGLE_SHEETS_CREDENTIALS_JSON: ${{ secrets.GOOGLE_SHEETS_CREDENTIALS_JSON }}
           HUNTER_API_KEY: ${{ secrets.HUNTER_API_KEY }}

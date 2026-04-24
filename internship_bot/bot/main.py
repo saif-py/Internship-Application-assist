@@ -21,6 +21,7 @@ from .resume_tailor import create_tailored_resume
 from .scoring import choose_role_track, is_target_listing, score_listing
 from .sheet_client import ensure_worksheet, open_spreadsheet, upsert_rows
 from .sources import fetch_all_listings
+from .webhook_client import WebhookSyncError, sync_rows_via_webhook
 
 LISTINGS_HEADERS = [
     "listing_id",
@@ -190,6 +191,56 @@ def build_autofill_payload(candidate: dict[str, Any], resume_path: str) -> Autof
     )
 
 
+def _sync_with_webhook(
+    webhook_url: str,
+    webhook_token: str,
+    sheet_names: dict[str, Any],
+    listing_rows: list[dict[str, Any]],
+    contact_rows: list[dict[str, Any]],
+    outreach_rows: list[dict[str, Any]],
+) -> None:
+    operations = [
+        {
+            "sheet": str(sheet_names.get("listings", "internship_listings")),
+            "keyField": "listing_id",
+            "headers": LISTINGS_HEADERS,
+            "preserveFields": ["status", "notes"],
+            "rows": listing_rows,
+        },
+        {
+            "sheet": str(sheet_names.get("contacts", "hiring_contacts")),
+            "keyField": "contact_id",
+            "headers": CONTACT_HEADERS,
+            "preserveFields": ["status", "notes"],
+            "rows": contact_rows,
+        },
+        {
+            "sheet": str(sheet_names.get("outreach", "outreach_drafts")),
+            "keyField": "outreach_id",
+            "headers": OUTREACH_HEADERS,
+            "preserveFields": ["status", "reply_status", "notes"],
+            "rows": outreach_rows,
+        },
+    ]
+
+    response = sync_rows_via_webhook(
+        webhook_url=webhook_url,
+        webhook_token=webhook_token,
+        operations=operations,
+        timeout=60,
+    )
+    results = response.get("results", [])
+
+    summary_chunks = []
+    for result in results:
+        summary_chunks.append(
+            f"{result.get('sheet', 'sheet')} u/a={result.get('updated', 0)}/{result.get('appended', 0)}"
+        )
+
+    summary = ", ".join(summary_chunks) if summary_chunks else "no operation summary returned"
+    print(f"[info] webhook sheets sync complete | {summary}")
+
+
 def main() -> int:
     repo_root = Path(__file__).resolve().parents[2]
     args = parse_args(repo_root)
@@ -352,6 +403,20 @@ def main() -> int:
             print(f"[info] dry-run files written to: {output_dir}")
             return 0
 
+        webhook_url = optional_env("SHEETS_WEBHOOK_URL")
+        webhook_token = optional_env("SHEETS_WEBHOOK_TOKEN")
+
+        if webhook_url:
+            _sync_with_webhook(
+                webhook_url=webhook_url,
+                webhook_token=webhook_token,
+                sheet_names=sheet_names,
+                listing_rows=listing_rows,
+                contact_rows=contact_rows,
+                outreach_rows=outreach_rows,
+            )
+            return 0
+
         service_account_info = load_service_account_info()
         spreadsheet_id = get_spreadsheet_id(profile_cfg)
         spreadsheet = open_spreadsheet(service_account_info, spreadsheet_id)
@@ -402,7 +467,7 @@ def main() -> int:
         )
         return 0
 
-    except (ConfigError, FileNotFoundError) as exc:
+    except (ConfigError, FileNotFoundError, WebhookSyncError) as exc:
         print(f"[error] {exc}")
         return 1
 
